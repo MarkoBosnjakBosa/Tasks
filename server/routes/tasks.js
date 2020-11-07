@@ -1,7 +1,8 @@
 module.exports = function(app, models, moment) {
 	const Task = models.Task;
 	app.get("/getTasks", (request, response) => {
-		Task.find({}).then(tasks => {
+		var query = {};
+		Task.find(query).then(tasks => {
 			response.status(200).send(tasks);
 			response.end();
 		}).catch(error => console.log(error));
