@@ -10,7 +10,7 @@ const port = process.env.PORT;
 const databaseUrl = process.env.DATABASE_URL;
 app.use(cors({origin: "*"}));
 
-const tasks = require("./routes/tasks.js")(app, mongoose, models, moment);
+const tasks = require("./routes/tasks.js")(app, models, moment);
 
 mongoose.connect(databaseUrl, {useNewUrlParser: true, useUnifiedTopology: true, useFindAndModify: false});
 const database = mongoose.connection;
