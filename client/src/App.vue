@@ -38,13 +38,15 @@
 		createTask(task) {
 			var body = {person: task.person, dueDate: task.dueDate, priority: task.priority, description: task.description};
 			axios.post(process.env.VUE_APP_BASE_URL + process.env.VUE_APP_PORT + "/createTask", body).then(response => {
+				var returnedData = {};
 				if(response.data.created) {
 					var newTask = response.data.task;
 					this.tasks = [...this.tasks, newTask];
-					this.returnedData.created = true;
+					returnedData = {created: true, errorFields: []};
+					this.returnedData = returnedData;
 				} else {
-					this.returnedData.created = false,
-					this.returnedData.errorFields = response.data.errorFields;
+					returnedData = {created: true, errorFields: response.data.errorFields};
+					this.returnedData = returnedData;
 				}
 			}).catch(error => console.log(error));
 		},
@@ -73,7 +75,7 @@
 		},
 		declineTask(taskId) {
 			var body = {taskId: taskId};
-			axios.post(process.env.VUE_APP_BASE_URL + process.env.VUE_APP_PORT + "/declineTask", body).then(response => {
+			axios.put(process.env.VUE_APP_BASE_URL + process.env.VUE_APP_PORT + "/declineTask", body).then(response => {
 				if(response.data.declined) {
 					this.tasks = this.tasks.map(task => task._id == response.data.task._id ? response.data.task : task);
 				}

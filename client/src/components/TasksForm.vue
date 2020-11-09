@@ -109,12 +109,13 @@
 			resetForm() {
 				this.task = {person: "", dueDate: "", priority: "", description: ""};
 				this.personError = false, this.dueDateError = false, this.priorityError = false, this.descriptionError = false, this.submitting = false;
+				this.$emit("resetdata");
 			}
 		},
 		computed: {
 			invalidPerson() {
 				var personFormat = /^[a-z0-9_.-]*$/;
-				if(this.user.person != "" && personFormat.test(this.user.person)) {
+				if(this.task.person != "" && personFormat.test(this.task.person)) {
 					return false;
 				} else {
 					return true;

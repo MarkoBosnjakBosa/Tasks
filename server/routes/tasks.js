@@ -86,7 +86,7 @@ module.exports = function(app, models, moment) {
 		var taskId = request.body.taskId;
 		if(taskId) {
 			var query = {_id: taskId};
-			var update = {resolved: true};
+			var update = {resolved: "yes"};
 			Task.findOneAndUpdate(query, update, {new: true}).then(task => {
 				if(!isEmpty(task)) {
 					response.status(200).json({resolved: true, task: task});
@@ -96,7 +96,7 @@ module.exports = function(app, models, moment) {
 					response.status(200).json({resolved: false});
 					response.end();
 				}
-			});
+			}).catch(error => console.log(error));
 		} else {
 			response.status(200).json({resolved: false});
 			response.end();
@@ -106,7 +106,7 @@ module.exports = function(app, models, moment) {
 		var taskId = request.body.taskId;
 		if(taskId) {
 			var query = {_id: taskId};
-			var update = {resolved: false};
+			var update = {resolved: "no"};
 			Task.findOneAndUpdate(query, update, {new: true}).then(task => {
 				if(!isEmpty(task)) {
 					response.status(200).json({declined: true, task: task});
@@ -116,7 +116,7 @@ module.exports = function(app, models, moment) {
 					response.status(200).json({declined: false});
 					response.end();
 				}
-			});
+			}).catch(error => console.log(error));
 		} else {
 			response.status(200).json({declined: false});
 			response.end();
