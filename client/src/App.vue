@@ -2,8 +2,8 @@
 	<div id="app" class="container-fluid">
 		<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.0/css/all.css">
 		<h1>Tasks</h1>
-		<task-form :returnedData="returnedData" @createtask="createTask" @resetdata="resetData"/>
-		<task-table :tasks="tasks" @gettasks="getTasks" @edittask="editTask" @deletetask="deleteTask" @resolvetask="resolveTask" @declinetask="declineTask"/>
+		<tasks-form :returnedData="returnedData" @createtask="createTask" @resetdata="resetData"/>
+		<tasks-table :tasks="tasks" @edittask="editTask" @deletetask="deleteTask" @resolvetask="resolveTask" @declinetask="declineTask"/>
 	</div>
 </template>
 
@@ -25,9 +25,7 @@
 			tasks: [],
 			returnedData: {
 				created: false,
-				submitted: false,
-				message: null,
-				_id: null
+				errorFields: []
 			}
 		}
 	},
@@ -38,13 +36,15 @@
 			}).catch(error => console.log(error));
 		},
 		createTask(task) {
-			var body = {person: task.person, dueDate: task.dueDate, priority: task.priority, description: task.description, resolved: task.resolved};
+			var body = {person: task.person, dueDate: task.dueDate, priority: task.priority, description: task.description};
 			axios.post(process.env.VUE_APP_BASE_URL + process.env.VUE_APP_PORT + "/createTask", body).then(response => {
-				this.returnedData = response.data;
 				if(response.data.created) {
-					var _id = response.data._id;
-					var newTask = {...task, _id};
+					var newTask = response.data.task;
 					this.tasks = [...this.tasks, newTask];
+					this.returnedData.created = true;
+				} else {
+					this.returnedData.created = false,
+					this.returnedData.errorFields = response.data.errorFields;
 				}
 			}).catch(error => console.log(error));
 		},
@@ -80,9 +80,12 @@
 			}).catch(error => console.log(error));
 		},
 		resetData() {
-			var reset = {created: false, submitted: false, message: null, _id: null};
+			var reset = {created: false, errorFields: []};
 			this.returnedData = reset;
 		}
+	},
+	created() {
+		this.getTasks();
 	}
 }
 </script>

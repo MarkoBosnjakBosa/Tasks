@@ -40,10 +40,10 @@
 					<td v-else style="text-transform: capitalize">{{task.priority}}</td>
 					<td v-if="editing == task._id" class="padded">
 						<i class="far fa-check-circle" @click="editTask(task)"></i>
-						<i class="far fa-times-circle" @click="disableEditing()"></i>
+						<i class="far fa-times-circle" @click="disableEditing(task)"></i>
 					</td>
 					<td v-else>
-						<i class="fas fa-pencil-alt" @click="enableEditing(task._id)"></i>
+						<i class="fas fa-pencil-alt" @click="enableEditing(task)"></i>
 						<i class="fas fa-trash" @click="deleteTask(task._id)"></i>
 						<i v-if="checkTaskDate(task.dueDate)" class="fas fa-check" :class="{'resolvedTask': isTaskResolved(task.resolved)}" @click="resolveTask(task._id)"></i>
 						<i v-if="checkTaskDate(task.dueDate)" class="fas fa-times" :class="{'declinedTask': isTaskDeclined(task.resolved)}" @click="declineTask(task._id)"></i>
@@ -76,12 +76,17 @@
 			}
 		},
 		props: {
-			tasks: []
+			tasks: Array
 		},
 		methods: {
-			getTasks() { this.$emit("gettasks"); },
-			enableEditing(id) { this.editing = id; },
-			disableEditing() { this.editing = null; },
+			enableEditing(task) { 
+				this.cachedTask = Object.assign({}, task);
+				this.editing = task._id; 
+			},
+			disableEditing(task) { 
+				Object.assign(task, this.cachedTask);
+				this.editing = null; 
+			},
 			editTask(task) {
 				if(task.person != "" && task.priority != "" && task.description != "") {
 					this.$emit('edittask', task);
@@ -112,9 +117,6 @@
 					return false;
 				}
 			}
-		},
-		mounted() {
-			this.getTasks();
 		},
 		computed: {
 			filterByTerm() {

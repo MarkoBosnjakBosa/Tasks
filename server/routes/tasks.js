@@ -11,27 +11,27 @@ module.exports = function(app, models, moment) {
 		var allowCreation = true;
 		var errorFields = [];
 		var person = request.body.person;
-		if(person) {
+		if(!person) {
 			errorFields.push("person");
 			allowCreation = false;
 		}
 		var dueDate = request.body.dueDate;
-		if(dueDate && validateDueDate(dueDate) && isAfterToday(dueDate)) {
+		if(!dueDate || invalidDueDate(dueDate) || isNotAfterToday(dueDate)) {
 			errorFields.push("dueDate");
 			allowCreation = false;
 		}
 		var priority = request.body.priority;
-		if(priority) {
+		if(!priority) {
 			errorFields.push("priority");
 			allowCreation = false;
 		}
 		var description = request.body.description;
-		if(description) {
+		if(!description) {
 			errorFields.push("description");
 			allowCreation = false;
 		}
 		if(allowCreation) {
-			var resolved = request.body.resolved;
+			var resolved = "processing";
 			var newTask = getTaskScheme(Task, person, dueDate, priority, description, resolved);
 			newTask.save().then(task => {
 				response.status(200).json({created: true, task: task});
@@ -66,7 +66,7 @@ module.exports = function(app, models, moment) {
 	});
 	app.delete("/deleteTask/:taskId", (request, response) => {
 		var taskId = request.params.taskId;
-		if(taskId){
+		if(taskId) {
 			var query = {_id: taskId};
 			Task.findOneAndRemove(query).then(task => {
 				if(!isEmpty(task)) {
@@ -84,7 +84,7 @@ module.exports = function(app, models, moment) {
 	});
 	app.put("/resolveTask", (request, response) => {
 		var taskId = request.body.taskId;
-		if(taskId){
+		if(taskId) {
 			var query = {_id: taskId};
 			var update = {resolved: true};
 			Task.findOneAndUpdate(query, update, {new: true}).then(task => {
@@ -104,7 +104,7 @@ module.exports = function(app, models, moment) {
 	});
 	app.put("/declineTask", (request, response) => {
 		var taskId = request.body.taskId;
-		if(taskId){
+		if(taskId) {
 			var query = {_id: taskId};
 			var update = {resolved: false};
 			Task.findOneAndUpdate(query, update, {new: true}).then(task => {
@@ -126,23 +126,23 @@ module.exports = function(app, models, moment) {
 	function getTaskScheme(Task, person, dueDate, priority, description, resolved) {
 		return new Task({person: person, dueDate: dueDate, priority: priority, description: description, resolved: resolved});
 	}
-	function validateDueDate(dueDate) {
+	function invalidDueDate(dueDate) {
 		var dateFormat = /(?:0[1-9]|[12][0-9]|3[01])\.(?:0[1-9]|1[0-2])\.(?:19|20\d{2})/;
 		if(dateFormat.test(dueDate)) {
-			return true;
-		} else {
 			return false;
+		} else {
+			return true;
 		}
 	}
-	function isAfterToday(date) {
+	function isNotAfterToday(date) {
 		var temporaryDateArray = date.split(".");
 		var temporaryDate = temporaryDateArray[2] + "-" + temporaryDateArray[1] + "-" + temporaryDateArray[0];
 		var dueDate = moment(temporaryDate);
 		var today = moment().subtract(1, "days").endOf("day");
 		if(dueDate.isAfter(today)) {
-			return true;
-		} else {
 			return false;
+		} else {
+			return true;
 		}
 	}
 	function isEmpty(object) {

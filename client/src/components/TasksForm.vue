@@ -4,11 +4,11 @@
 			<div class="form-row">
 				<div class="form-group col-md-4">
 					<input type="text" id="person" class="form-control" :class="{'errorField' : personError && submitting}" placeholder="Person" v-model="task.person" ref="first" @focus="clearPersonStatus()" @keypress="clearPersonStatus()"/>
-					<small v-if="personError && submitting" class="form-text errorInput">Please provide a valid person!</small>
+					<small v-if="(personError && submitting) || (!returnedData.created && returnedData.errorFields.includes('person'))" class="form-text errorInput">Please provide a valid person!</small>
 				</div>
 				<div class="form-group col-md-4">
 					<input type="text" id="dueDate" class="form-control" :class="{'errorField' : dueDateError && submitting}" placeholder="Due Date" v-model="task.dueDate" @focus="clearDueDateStatus()" @keypress="clearDueDateStatus()"/>
-					<small v-if="dueDateError && submitting" class="form-text errorInput">Please provide a valid due date!</small>
+					<small v-if="(dueDateError && submitting) || (!returnedData.created && returnedData.errorFields.includes('dueDate'))" class="form-text errorInput">Please provide a valid due date!</small>
 				</div>
 				<div class="form-group col-md-4">
 					<select id="priority" class="form-control" :class="{'errorField' : priorityError && submitting}" v-model="task.priority" @focus="clearPriorityStatus()" @keypress="clearPriorityStatus()">
@@ -17,19 +17,18 @@
 						<option value="medium">Medium</option>
 						<option value="low">Low</option>
 					</select>
-					<small v-if="priorityError && submitting" class="form-text errorInput">Please provide a valid priority!</small>
+					<small v-if="(priorityError && submitting) || (!returnedData.created && returnedData.errorFields.includes('priority'))" class="form-text errorInput">Please provide a valid priority!</small>
 				</div>
 			</div>
 			<div class="form-row">
 				<div class="form-group col-md-12">
 					<input type="text" id="description" class="form-control" :class="{'errorField' : descriptionError && submitting}" placeholder="Description" v-model="task.description" @focus="clearDescriptionStatus()" @keypress="clearDescriptionStatus()"/>
-					<small v-if="descriptionError && submitting" class="form-text errorInput">Please provide a valid description!</small>
+					<small v-if="(descriptionError && submitting) || (!returnedData.created && returnedData.errorFields.includes('description'))" class="form-text errorInput">Please provide a valid description!</small>
 				</div>
 			</div>
-			<div v-if="returnedData.created" class="creationSuccessful">{{returnedData.message}}</div>
-			<div v-if="!returnedData.created && returnedData.submitted" class="creationFailed">{{returnedData.message}}</div>
-			<div>
-				<button type="submit" class="btn btn-primary">Add Task</button>
+			<div v-if="returnedData.created" class="form-group creationSuccessful">Your task has been successfully created!</div>
+			<div class="form-group">
+				<button type="submit" class="btn btn-primary">Create</button>
 				<button type="button" class="btn btn-danger resetForm" @click="resetForm()">Reset</button>
 			</div>
 		</form>
@@ -52,13 +51,12 @@
 					person: "",
 					dueDate: "",
 					priority: "",
-					description: "",
-					resolved: "processing"
+					description: ""
 				}
 			}
 		},
 		props: {
-			returnedData: {}
+			returnedData: Object
 		},
 		methods: {
 			createTask() {
@@ -86,11 +84,11 @@
 				}
 				if(!allowSubmit) {
 					this.$emit("resetdata");
-				return;
+					return;
 				}
 				this.$emit("createtask", this.task);
 				this.$refs.first.focus();
-				this.task = { person: "", dueDate: "", priority: "", description: "", resolved: "processing"};
+				this.task = {person: "", dueDate: "", priority: "", description: ""};
 				this.personError = false, this.dueDateError = false, this.priorityError = false, this.descriptionError = false, this.submitting = false;
 			},
 			clearPersonStatus() { this.personError = false; },
@@ -109,7 +107,7 @@
 				}
 			},
 			resetForm() {
-				this.task = { person: "", dueDate: "", priority: "", description: "", resolved: "processing"};
+				this.task = {person: "", dueDate: "", priority: "", description: ""};
 				this.personError = false, this.dueDateError = false, this.priorityError = false, this.descriptionError = false, this.submitting = false;
 			}
 		},
