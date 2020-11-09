@@ -40,7 +40,7 @@
 	import moment from "moment";
 
 	export default {
-	name: "tasks-form",
+		name: "tasks-form",
 		data() {
 			return {
 				submitting: false,
