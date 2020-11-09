@@ -53,7 +53,7 @@
 						<i v-if="!checkTaskDate(task.dueDate) && isTaskResolved(task.resolved)" class="fas fa-check resolvedTask"></i>
 						<i v-if="!checkTaskDate(task.dueDate) && isTaskDeclined(task.resolved)" class="fas fa-times declinedTask"></i>
 					</td>
-					<td v-else>
+					<td v-else class="dueDateExpired">
 						<i v-if="checkTaskDate(task.dueDate)" class="far fa-clock"></i>
 						<i v-if="!checkTaskDate(task.dueDate) && isTaskResolved(task.resolved)" class="fas fa-check resolvedTask"></i>
 						<i v-if="!checkTaskDate(task.dueDate) && isTaskDeclined(task.resolved)" class="fas fa-times declinedTask"></i>
@@ -89,7 +89,7 @@
 			},
 			editTask(task) {
 				if(task.person != "" && task.priority != "" && task.description != "") {
-					this.$emit('edittask', task);
+					this.$emit("edittask", task);
 					this.editing = null;
 				} else {
 					return;
@@ -157,6 +157,9 @@
 	}
 	.fa-times-circle, .declinedTask {
 		color: #ff0000;
+	}
+	.dueDateExpired .resolvedTask, .dueDateExpired .declinedTask {
+		cursor: default;
 	}
 	.noTasks {
 		font-weight: bold;

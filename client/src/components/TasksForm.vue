@@ -114,7 +114,7 @@
 		},
 		computed: {
 			invalidPerson() {
-				var personFormat = /^[a-z0-9_.-]*$/;
+				var personFormat = /^[a-zA-Z0-9_.-]*$/;
 				if(this.task.person != "" && personFormat.test(this.task.person)) {
 					return false;
 				} else {

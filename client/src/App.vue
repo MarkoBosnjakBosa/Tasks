@@ -45,7 +45,7 @@
 					returnedData = {created: true, errorFields: []};
 					this.returnedData = returnedData;
 				} else {
-					returnedData = {created: true, errorFields: response.data.errorFields};
+					returnedData = {created: false, errorFields: response.data.errorFields};
 					this.returnedData = returnedData;
 				}
 			}).catch(error => console.log(error));
