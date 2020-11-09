@@ -1,26 +1,96 @@
 <template>
-  <img alt="Vue logo" src="./assets/logo.png">
-  <HelloWorld msg="Welcome to Your Vue.js App"/>
+	<div id="app" class="container-fluid">
+		<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.0/css/all.css">
+		<h1>Tasks</h1>
+		<task-form :returnedData="returnedData" @createtask="createTask" @resetdata="resetData"/>
+		<task-table :tasks="tasks" @gettasks="getTasks" @edittask="editTask" @deletetask="deleteTask" @resolvetask="resolveTask" @declinetask="declineTask"/>
+	</div>
 </template>
 
 <script>
-import HelloWorld from './components/HelloWorld.vue'
+	import "bootstrap";
+	import "bootstrap/dist/css/bootstrap.min.css";
+	import TasksTable from "@/components/TasksTable.vue";
+	import TasksForm from "@/components/TasksForm.vue";
+	var axios = require("axios");
 
-export default {
-  name: 'App',
-  components: {
-    HelloWorld
-  }
+	export default {
+		name: "app",
+		components: {
+			TasksTable,
+			TasksForm
+		},
+	data() {
+		return {
+			tasks: [],
+			returnedData: {
+				created: false,
+				submitted: false,
+				message: null,
+				_id: null
+			}
+		}
+	},
+	methods: {
+		getTasks() {
+			axios.get(process.env.VUE_APP_BASE_URL + process.env.VUE_APP_PORT + "/getTasks").then(response => {
+				this.tasks = response.data;
+			}).catch(error => console.log(error));
+		},
+		createTask(task) {
+			var body = {person: task.person, dueDate: task.dueDate, priority: task.priority, description: task.description, resolved: task.resolved};
+			axios.post(process.env.VUE_APP_BASE_URL + process.env.VUE_APP_PORT + "/createTask", body).then(response => {
+				this.returnedData = response.data;
+				if(response.data.created) {
+					var _id = response.data._id;
+					var newTask = {...task, _id};
+					this.tasks = [...this.tasks, newTask];
+				}
+			}).catch(error => console.log(error));
+		},
+		editTask(updatedTask) {
+			var body = {taskId: updatedTask._id, person: updatedTask.person, priority: updatedTask.priority, description: updatedTask.description};
+			axios.put(process.env.VUE_APP_BASE_URL + process.env.VUE_APP_PORT + "/editTask", body).then(response => {
+				if(response.data.edited) {
+					this.tasks = this.tasks.map(task => task._id == updatedTask._id ? updatedTask : task);
+				}
+			}).catch(error => console.log(error));
+		},
+		deleteTask(taskId) {
+			axios.delete(process.env.VUE_APP_BASE_URL + process.env.VUE_APP_PORT + "/deleteTask/" + taskId).then(response => {
+				if(response.data.deleted) {
+					this.tasks = this.tasks.filter(task => task._id != taskId);
+				}
+			}).catch(error => console.log(error));
+		},
+		resolveTask(taskId) {
+			var body = {taskId: taskId};
+			axios.put(process.env.VUE_APP_BASE_URL + process.env.VUE_APP_PORT + "/resolveTask", body).then(response => {
+				if(response.data.resolved) {
+					this.tasks = this.tasks.map(task => task._id == response.data.task._id ? response.data.task : task);
+				}
+			}).catch(error => console.log(error));
+		},
+		declineTask(taskId) {
+			var body = {taskId: taskId};
+			axios.post(process.env.VUE_APP_BASE_URL + process.env.VUE_APP_PORT + "/declineTask", body).then(response => {
+				if(response.data.declined) {
+					this.tasks = this.tasks.map(task => task._id == response.data.task._id ? response.data.task : task);
+				}
+			}).catch(error => console.log(error));
+		},
+		resetData() {
+			var reset = {created: false, submitted: false, message: null, _id: null};
+			this.returnedData = reset;
+		}
+	}
 }
 </script>
 
 <style>
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
-}
+	h1 {
+		text-align: center;
+		margin-top: 20px;
+		margin-bottom: 20px;
+	}
 </style>

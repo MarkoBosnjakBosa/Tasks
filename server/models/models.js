@@ -4,7 +4,7 @@ module.exports = function(mongoose) {
         dueDate: String,
         priority: String,
         description: String,
-        resolved: Boolean
+        resolved: String
     });
     var models = {
         Task: mongoose.model("Task", taskScheme)
