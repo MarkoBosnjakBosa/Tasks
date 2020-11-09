@@ -127,7 +127,7 @@ module.exports = function(app, models, moment) {
 		return new Task({person: person, dueDate: dueDate, priority: priority, description: description, resolved: resolved});
 	}
 	function invalidPerson(person) {
-		var personFormat = /^[a-zA-Z0-9_.-]*$/;
+		var personFormat = /^[a-zA-Z\s]*$/;
 		if(personFormat.test(person)) {
 			return false;
 		} else {

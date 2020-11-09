@@ -88,7 +88,7 @@
 				this.editing = null; 
 			},
 			editTask(task) {
-				if(task.person != "" && task.priority != "" && task.description != "") {
+				if(this.isValidPerson(task.person) && task.priority != "" && task.description != "") {
 					this.$emit("edittask", task);
 					this.editing = null;
 				} else {
@@ -112,6 +112,14 @@
 				var dueDate = moment(temporaryDate);
 				var today = moment().subtract(1, "days").endOf("day");
 				if(dueDate.isAfter(today)) {
+					return true;
+				} else {
+					return false;
+				}
+			},
+			isValidPerson(person) {
+				var personFormat = /^[a-zA-Z\s]*$/;
+				if(person != "" && personFormat.test(person)) {
 					return true;
 				} else {
 					return false;
