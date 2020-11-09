@@ -11,7 +11,7 @@ module.exports = function(app, models, moment) {
 		var allowCreation = true;
 		var errorFields = [];
 		var person = request.body.person;
-		if(!person) {
+		if(!person || invalidPerson(person)) {
 			errorFields.push("person");
 			allowCreation = false;
 		}
@@ -125,6 +125,14 @@ module.exports = function(app, models, moment) {
 
 	function getTaskScheme(Task, person, dueDate, priority, description, resolved) {
 		return new Task({person: person, dueDate: dueDate, priority: priority, description: description, resolved: resolved});
+	}
+	function invalidPerson(person) {
+		var personFormat = /^[a-z0-9_.-]*$/;
+		if(personFormat.test(person)) {
+			return false;
+		} else {
+			return true;
+		}
 	}
 	function invalidDueDate(dueDate) {
 		var dateFormat = /(?:0[1-9]|[12][0-9]|3[01])\.(?:0[1-9]|1[0-2])\.(?:19|20\d{2})/;

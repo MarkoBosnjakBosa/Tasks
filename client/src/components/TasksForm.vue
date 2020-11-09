@@ -112,7 +112,14 @@
 			}
 		},
 		computed: {
-			invalidPerson() { return this.task.person === ""; },
+			invalidPerson() {
+				var personFormat = /^[a-z0-9_.-]*$/;
+				if(this.user.person != "" && personFormat.test(this.user.person)) {
+					return false;
+				} else {
+					return true;
+				}
+			},
 			invalidDueDate() {
 				var dateFormat = /(?:0[1-9]|[12][0-9]|3[01])\.(?:0[1-9]|1[0-2])\.(?:19|20\d{2})/;
 				if(this.task.dueDate != "" && dateFormat.test(this.task.dueDate) && this.isAfterToday(this.task.dueDate)) {
