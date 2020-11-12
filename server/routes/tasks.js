@@ -35,12 +35,12 @@ module.exports = function(app, models, moment) {
 			var newTask = getTaskScheme(Task, person, dueDate, priority, description, resolved);
 			newTask.save().then(task => {
 				response.status(200).json({created: true, task: task});
-                response.end();
-            }).catch(error => console.log(error));
-        } else {
-            response.status(200).json({created: false, errorFields: errorFields});
-            response.end();
-        }
+				response.end();
+			}).catch(error => console.log(error));
+		} else {
+			response.status(200).json({created: false, errorFields: errorFields});
+			response.end();
+		}
 	});
 	app.put("/editTask", (request, response) => {
 		var taskId = request.body.taskId;
@@ -52,17 +52,17 @@ module.exports = function(app, models, moment) {
 			var update = {person: person, priority: priority, description: description};
 			Task.findOneAndUpdate(query, update, {new: true}).then(task => {
 				if(!isEmpty(task)) {
-                    response.status(200).json({edited: true});
-                    response.end();
-                } else {
-                    response.status(200).json({edited: false});
-                    response.end();
-                }
-            }).catch(error => console.log(error));
+					response.status(200).json({edited: true});
+					response.end();
+				} else {
+					response.status(200).json({edited: false});
+					response.end();
+				}
+			}).catch(error => console.log(error));
 		} else {
-            response.status(200).json({edited: false});
-            response.end();
-        }
+			response.status(200).json({edited: false});
+			response.end();
+		}
 	});
 	app.delete("/deleteTask/:taskId", (request, response) => {
 		var taskId = request.params.taskId;
@@ -70,17 +70,17 @@ module.exports = function(app, models, moment) {
 			var query = {_id: taskId};
 			Task.findOneAndRemove(query).then(task => {
 				if(!isEmpty(task)) {
-                    response.status(200).json({deleted: true});
-                    response.end();
-                } else {
-                    response.status(200).json({deleted: false});
-                    response.end();
-                }
-            }).catch(error => console.log(error));
-        } else {
-            response.status(200).json({deleted: false});
-            response.end();
-        }
+					response.status(200).json({deleted: true});
+					response.end();
+				} else {
+					response.status(200).json({deleted: false});
+					response.end();
+				}
+			}).catch(error => console.log(error));
+		} else {
+			response.status(200).json({deleted: false});
+			response.end();
+		}
 	});
 	app.put("/resolveTask", (request, response) => {
 		var taskId = request.body.taskId;
