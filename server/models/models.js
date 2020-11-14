@@ -1,12 +1,12 @@
 module.exports = function(mongoose) {
-    var taskScheme = new mongoose.Schema({
+    const taskScheme = new mongoose.Schema({
         person: String,
         dueDate: String,
         priority: String,
         description: String,
         resolved: String
     });
-    var models = {
+    const models = {
         Task: mongoose.model("Task", taskScheme)
     }
     return models;
