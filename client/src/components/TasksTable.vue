@@ -2,12 +2,13 @@
 	<div id="tasksTable">
 		<table class="table">
 			<thead>
-				<th>Person</th>
-				<th>Description</th>
-				<th>Due Date</th>
-				<th>Priority</th>
-				<th>Actions</th>
-				<th>
+				<th scope="col">#</th>
+				<th scope="col">Person</th>
+				<th scope="col">Description</th>
+				<th scope="col">Due Date</th>
+				<th scope="col">Priority</th>
+				<th scope="col">Actions</th>
+				<th scope="col">
 					<select id="filter" class="form-control" v-model="filter">
 						<option value="all" selected>All</option>
 						<option value="resolved">Resolved</option>
@@ -23,7 +24,8 @@
 				<tr v-if="!filterByTerm.length">
 					<td colspan="6" class="noTasks">No tasks found!</td>
 				</tr>
-				<tr v-for="task in filterByTerm" :key="task._id">
+				<tr v-for="(task, index) in filterByTerm" :key="task._id">
+					<th scope="row">{{++index}}</th>
 					<td v-if="editing == task._id"><input type="text" class="form-control" v-model="task.person"/></td>
 					<td v-else>{{task.person}}</td>
 					<td v-if="editing == task._id"><input type="text" class="form-control" v-model="task.description"/></td>
