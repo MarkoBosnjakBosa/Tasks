@@ -148,10 +148,6 @@
 		color: #008000;
 		margin-bottom: 10px;
 	}
-	.creationFailed {
-		color: #ff0000;
-		margin-bottom: 10px;
-	}
 	.errorField {
 		border: 1px solid #ff0000;
 		box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.1), 0 0 6px #ff8080;
