@@ -33,7 +33,7 @@
 					<td v-if="editing == task._id" class="padded">{{task.dueDate}}</td>
 					<td v-else>{{task.dueDate}}</td>
 					<td v-if="editing == task._id">
-					<select id="priority" class="form-control" v-model="task.priority">
+					<select class="form-control" v-model="task.priority">
 						<option value="top">Top</option>
 						<option value="medium">Medium</option>
 						<option value="low">Low</option>
